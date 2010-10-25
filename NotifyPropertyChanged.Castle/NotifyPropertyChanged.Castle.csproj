@@ -55,7 +55,7 @@
     <Compile Include="MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UsingPOCO\NotifierInterceptor.cs" />
+    <Compile Include="UsingPOCO\PropertyChangedInterceptor.cs" />
     <Compile Include="UsingViewModelBase\CastleViewModelUsingViewModelBase.cs" />
     <Compile Include="UsingPOCO\CastleViewModelThatIsPOCO.cs" />
     <Compile Include="NotifyPropertyChangedAttribute.cs" />
