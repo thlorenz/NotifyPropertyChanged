@@ -18,17 +18,21 @@ namespace NotifyPropertyChanged.Castle
         {
             base.OnStartup(e);
 
-            var proxy = MakeINotifyPropertyChanged<CastleViewModelThatIsPOCO>();
-            ((INotifyPropertyChanged)proxy).PropertyChanged += (s, arg) => Console.WriteLine("Raised PropertyChange for  {0}", arg.PropertyName);
+            //// var proxy = MakeINotifyPropertyChanged<CastleViewModelThatIsPOCO>();
+            
+            var proxy = CreateClassProxyUsingViewModelBase();
+
+           ((INotifyPropertyChanged)proxy).PropertyChanged += (s, arg) => Console.WriteLine("Raised PropertyChange for  {0}", arg.PropertyName);
+
             var view = new MainView(proxy);
-            new Window { Content = view, Topmost = true, Width = 300, Height = 200 }.Show();
+            new Window { Content = view, Topmost = true, Width = 300, Height = 200 } .Show();
         }
-       
 
         static CastleViewModelUsingViewModelBase CreateClassProxyUsingViewModelBase()
         {
             return _generator.CreateClassProxy<CastleViewModelUsingViewModelBase>(
-                new LogCallsInterceptor(), new ViewModelInterceptor<CastleViewModelUsingViewModelBase>());
+                new LogCallsInterceptor(), 
+                new ViewModelInterceptor<CastleViewModelUsingViewModelBase>());
         }
 
         static T MakeINotifyPropertyChanged<T>() where T : class, new()
@@ -38,8 +42,7 @@ namespace NotifyPropertyChanged.Castle
                 typeof(T), 
                 new[] { typeof(INotifyPropertyChanged) }, 
                 ProxyGenerationOptions.Default, 
-                new PropertyChangedInterceptor()
-                );
+                new PropertyChangedInterceptor());
 
             return proxy as T;
         }

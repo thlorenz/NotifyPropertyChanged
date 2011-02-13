@@ -9,10 +9,10 @@ namespace NotifyPropertyChanged.Castle.UsingPOCO
 {
     public class PropertyChangedInterceptor : IInterceptor
     {
-        public static Dictionary<string, PropertyChangedEventArgs> _cache =
-            new Dictionary<string, PropertyChangedEventArgs>();
+        public static Dictionary<string, PropertyChangedEventArgs> _cache =  new Dictionary<string, PropertyChangedEventArgs>();
 
         public IDictionary<string, IEnumerable<string>> NotifyingProperties;
+       
         PropertyChangedEventHandler propertyChangedEventHandler = delegate { };
 
         public void Intercept(IInvocation invocation)
@@ -34,6 +34,8 @@ namespace NotifyPropertyChanged.Castle.UsingPOCO
                 if (NotifyingProperties == null)
                     FindNotifyingProperties(invocation.Method.DeclaringType);
 
+                // if none of all properties have an attribute, that explicitly indicates that they should raise property changed, we assume
+                // that all properties raise property changed by default.
                 if (NotifyingProperties.Count == 0)
                     InvokeSetAndRaiseNotifyPropertyChangedEvent(invocation);
                 else
@@ -54,13 +56,6 @@ namespace NotifyPropertyChanged.Castle.UsingPOCO
             }
 
             return arg;
-        }
-
-        void AddEventSubscription(IInvocation invocation)
-        {
-            propertyChangedEventHandler = (PropertyChangedEventHandler)
-                Delegate.Combine(propertyChangedEventHandler, (Delegate)invocation.Arguments[0]);
-            invocation.ReturnValue = propertyChangedEventHandler;
         }
 
         void FindNotifyingProperties(Type type)
@@ -100,6 +95,13 @@ namespace NotifyPropertyChanged.Castle.UsingPOCO
                 NotifyingProperties[invocation.Method.Name].ForEach(
                     name => propertyChangedEventHandler(invocation.Proxy, RetrievePropertyChangedArg(name)));
             }
+        }
+        
+        void AddEventSubscription(IInvocation invocation)
+        {
+            propertyChangedEventHandler = (PropertyChangedEventHandler)
+                Delegate.Combine(propertyChangedEventHandler, (Delegate)invocation.Arguments[0]);
+            invocation.ReturnValue = propertyChangedEventHandler;
         }
 
         void RemoveEventSubsciption(IInvocation invocation)

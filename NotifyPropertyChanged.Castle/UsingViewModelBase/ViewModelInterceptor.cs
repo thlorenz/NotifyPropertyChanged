@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 using Castle.DynamicProxy;
-using NotifyPropertyChanged.Castle.UsingViewModelBase;
 using WPFCoreTools;
 
-namespace NotifyPropertyChanged.Castle
+namespace NotifyPropertyChanged.Castle.UsingViewModelBase
 {
     /// <summary>
     /// One way to do it, but Viewmodel needs to have a RaisePropertyChangeMethod
